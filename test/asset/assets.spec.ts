@@ -1,9 +1,13 @@
-import { AssetMongoRepository } from "../../src";
+import { AssetMongoRepository, AssetTypeEnum } from "../../src";
 
 describe("Assets", () => {
   it("Get all assets", async () => {
-    const assets = await AssetMongoRepository.instance().all();
+    const assets = await AssetMongoRepository.instance().find(
+      true,
+      AssetTypeEnum.STABLE,
+    );
 
-    console.log("assets", assets);
+    console.log("assets", assets.length, assets);
+    expect(assets.length).toBeGreaterThan(0);
   });
 });

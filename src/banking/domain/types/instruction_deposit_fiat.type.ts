@@ -29,7 +29,7 @@ export type InstructionDepositFiat = {
     accountRoutingNumber: string;
     memo: string;
   };
-  SWIFT:{
+  SWIFT: {
     holderName: string;
     accountNumber: string;
     swiftBic: string;
