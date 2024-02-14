@@ -1,8 +1,10 @@
 import { AggregateRoot } from "../../shared/domain/aggregate_root";
+import { AssetTypeEnum } from "./types/asset_type.enum";
 
 export class Asset extends AggregateRoot {
   private id?: string;
   private assetId: string;
+  private assetType?: AssetTypeEnum;
   private code: string;
   private icon: string;
   private name: string;
@@ -11,6 +13,7 @@ export class Asset extends AggregateRoot {
 
   static createNewAsset(
     assetId: string,
+    assetType: AssetTypeEnum,
     code: string,
     icon: string,
     name: string,
@@ -20,6 +23,7 @@ export class Asset extends AggregateRoot {
     const a: Asset = new Asset();
 
     a.assetId = assetId;
+    a.assetType = assetType;
     a.code = code;
     a.icon = icon;
     a.name = name;
@@ -32,6 +36,7 @@ export class Asset extends AggregateRoot {
   static fromPrimitives(id: string, plainData: any): Asset {
     const a = Asset.createNewAsset(
       plainData.assetId,
+      plainData.assetType,
       plainData.code,
       plainData.icon,
       plainData.name,
@@ -75,6 +80,7 @@ export class Asset extends AggregateRoot {
     return {
       id: this.id,
       assetId: this.assetId,
+      assetType: this.assetType,
       code: this.code,
       icon: this.icon,
       name: this.name,
