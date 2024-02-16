@@ -105,7 +105,14 @@ export class ClientMongoRepository
 
   async findByDni(dni: string): Promise<IClient | undefined> {
     const collection = await this.collection();
-    const result = await collection.findOne({ dni });
+    let result = await collection.findOne({ dni });
+
+    if (!result) {
+      result = await collection.findOne({
+        "informationCompany.registerNumber": dni,
+      });
+    }
+
     if (!result) return undefined;
 
     return this.buildClient({ ...result }, result._id.toString());

@@ -341,4 +341,28 @@ describe("Client", () => {
     client.deleteKycAction("0.34443428785307506");
     await ClientMongoRepository.instance().upsert(client);
   });
+
+  it("Should set FeeACHPanama", async () => {
+    const client =
+      await ClientMongoRepository.instance().findByClientId(
+        "MSerrano181263254",
+      );
+  });
+
+  it("Should search client by dni, type natural person", async () => {
+    const dni = "181263254";
+
+    const client = await ClientMongoRepository.instance().findByDni(dni);
+
+    expect(client).not.toBe(undefined);
+  });
+
+  it("Should search client by company name, type company", async () => {
+    const registerNumber = "2165954156";
+
+    const client =
+      await ClientMongoRepository.instance().findByDni(registerNumber);
+
+    expect(client).not.toBe(undefined);
+  });
 });
