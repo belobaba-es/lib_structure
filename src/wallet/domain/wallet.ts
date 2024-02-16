@@ -115,11 +115,11 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this.lockedBalance;
   }
 
-  /*calculateNewBalance(balance: number, lockedBalance: number): Wallet {
-                            this.balance = balance;
-                            this.lockedBalance = lockedBalance;
-                            return this;
-                          }*/
+  calculateNewBalance(balance: number, lockedBalance: number): IWallet {
+    this.balance = balance;
+    this.lockedBalance = lockedBalance;
+    return this;
+  }
 
   getAsset(): Asset {
     return this.asset;
@@ -218,9 +218,5 @@ export class Wallet extends AggregateRoot implements IWallet {
       lockedBalance: this.lockedBalance,
       instructionForDeposit: this.instructForDeposit,
     };
-  }
-
-  calculateNewBalance(balance: number, lockedBalance: number): IWallet {
-    return undefined;
   }
 }
