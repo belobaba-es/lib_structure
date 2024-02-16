@@ -1,9 +1,8 @@
 import { IClient } from "../../client";
 import { AggregateRoot } from "../../shared/domain/aggregate_root";
-import { IWallet, WalletType } from "../../wallet";
-import { InstructionDepositCrypto } from "./type/instruction_deposit_crypto.type";
+import { InstructionDepositCrypto, IWallet, WalletType } from "../../wallet";
 import { v4 } from "uuid";
-import { InstructionDepositFiat } from "../../banking";
+import { InstructionDepositFiat, InstructionsAchPabType } from "../../banking";
 import { Asset } from "../../asset";
 
 export class Wallet extends AggregateRoot implements IWallet {
@@ -16,7 +15,10 @@ export class Wallet extends AggregateRoot implements IWallet {
   private lockedBalance: number;
   private label: string;
   private client: IClient;
-  private instructForDeposit: InstructionDepositFiat | InstructionDepositCrypto;
+  private instructForDeposit:
+    | InstructionDepositFiat
+    | InstructionDepositCrypto
+    | InstructionsAchPabType;
 
   setId(id: string): Wallet {
     this.id = id;
@@ -28,7 +30,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  setClientId(clientId: string): Wallet {
+  setClientId(clientId: string): IWallet {
     this.clientId = clientId;
     return this;
   }
@@ -38,7 +40,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  setBalance(balance: number): Wallet {
+  setBalance(balance: number): IWallet {
     this.balance = balance;
     return this;
   }
@@ -59,7 +61,10 @@ export class Wallet extends AggregateRoot implements IWallet {
   }
 
   setInstructionForDeposit(
-    data: InstructionDepositCrypto | InstructionDepositFiat,
+    data:
+      | InstructionDepositCrypto
+      | InstructionDepositFiat
+      | InstructionsAchPabType,
   ): Wallet {
     this.instructForDeposit = data;
     return this;
@@ -89,7 +94,8 @@ export class Wallet extends AggregateRoot implements IWallet {
 
   getInstructionForDeposit():
     | InstructionDepositFiat
-    | InstructionDepositCrypto {
+    | InstructionDepositCrypto
+    | InstructionsAchPabType {
     return this.instructForDeposit;
   }
 
@@ -109,11 +115,11 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this.lockedBalance;
   }
 
-  calculateNewBalance(balance: number, lockedBalance: number): Wallet {
-    this.balance = balance;
-    this.lockedBalance = lockedBalance;
-    return this;
-  }
+  /*calculateNewBalance(balance: number, lockedBalance: number): Wallet {
+                            this.balance = balance;
+                            this.lockedBalance = lockedBalance;
+                            return this;
+                          }*/
 
   getAsset(): Asset {
     return this.asset;
@@ -133,10 +139,13 @@ export class Wallet extends AggregateRoot implements IWallet {
       : this.truncate(Number(this.balance) - Number(this.lockedBalance), 6);
   }
 
-  updateLookBalance(amount: number): Wallet {
+  updateLockedBalance(amount: number): IWallet {
     let d = 3;
 
-    if (this.getAsset().getAssetCode() !== "USD") {
+    if (
+      this.getAsset().getAssetCode() !== "USD" &&
+      this.getAsset().getAssetCode() !== "PAB"
+    ) {
       d = 8;
     }
 
@@ -154,7 +163,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  releaseBlockedBalance(amount: number): Wallet {
+  releaseBlockedBalance(amount: number): IWallet {
     let d = 3;
 
     if (this.getAsset().getAssetCode() !== "USD") {
@@ -168,7 +177,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  updateBalance(amount: number): Wallet {
+  updateBalance(amount: number): IWallet {
     let d = 3;
 
     if (this.getAsset().getAssetCode() !== "USD") {
@@ -180,7 +189,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  setNewBalance(balance: number, lockedBalance: number): Wallet {
+  setNewBalance(balance: number, lockedBalance: number): IWallet {
     this.balance = balance;
     this.lockedBalance = lockedBalance;
     return this;
@@ -209,5 +218,9 @@ export class Wallet extends AggregateRoot implements IWallet {
       lockedBalance: this.lockedBalance,
       instructionForDeposit: this.instructForDeposit,
     };
+  }
+
+  calculateNewBalance(balance: number, lockedBalance: number): IWallet {
+    return undefined;
   }
 }
