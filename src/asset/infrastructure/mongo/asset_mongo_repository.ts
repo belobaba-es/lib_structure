@@ -1,7 +1,7 @@
 import { MongoClientFactory, MongoRepository } from "../../../shared";
 import { Asset } from "../../domain/asset";
 import { IAssetRepository } from "../../domain/interfaces/asset_repository.interface";
-import { AssetTypeEnum } from "../../domain/types/asset_type.enum";
+import { AssetClassification } from "../../domain/types/asset_classification.enum";
 
 export class AssetMongoRepository
   extends MongoRepository<Asset>
@@ -53,14 +53,20 @@ export class AssetMongoRepository
     return Asset.fromPrimitives(r._id.toString(), r);
   }
 
-  async find(status: boolean, assetType?: AssetTypeEnum): Promise<Asset[]> {
+  async find(
+    status: boolean,
+    assetClassification?: AssetClassification,
+  ): Promise<Asset[]> {
     const collection = await this.collection();
 
-    let filters: { active: boolean; assetType?: AssetTypeEnum } = {
+    let filters: {
+      active: boolean;
+      assetClassification?: AssetClassification;
+    } = {
       active: status,
     };
-    if (assetType) {
-      filters.assetType = assetType;
+    if (assetClassification) {
+      filters.assetClassification = assetClassification;
     }
 
     const result = await collection.find(filters).toArray();
