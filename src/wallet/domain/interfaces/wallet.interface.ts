@@ -55,8 +55,4 @@ export interface IWallet {
   ): IWallet;
 
   setLockedBalance(lockedBalance: number): void;
-
-  addFunds(amount: number): IWallet;
-
-  debitFunds(amount: number): IWallet;
 }
