@@ -5,7 +5,6 @@ import { CounterpartyProfileType } from "../../../counterparty";
 
 export type CounterpartyBankDTO = {
   id?: string;
-  assetId: string;
   accountNumber: string;
   counterpartyId: string;
   counterpartyType: string;

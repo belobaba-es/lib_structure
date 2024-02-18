@@ -90,7 +90,6 @@ export class RegisterOrSearchCounterpartyInternal {
             name: clientDestination.getName(),
           },
           id: instruction.id,
-          assetId: wallet.getAsset().getAssetId(),
           accountNumber: instruction.WIRE.accountNumber,
         },
         CounterpartyStatus.ACTIVE,

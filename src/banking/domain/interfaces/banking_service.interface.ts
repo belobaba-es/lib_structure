@@ -6,6 +6,7 @@ import { Address, DepositInformation } from "../../../shared";
 import { InformationIntermediaryBankDTO } from "../types/information_intermediary_bank.type";
 import { WithdrawalPurpose } from "../../../withdrawal";
 import { CounterpartyProfileType } from "../../../counterparty";
+import { BankingRails } from "../banking_rails";
 
 export interface IBankingService {
   searchDepositInformation(
@@ -24,8 +25,7 @@ export interface IBankingService {
       name: string;
       address: Address;
     },
-    assetId: string,
-    bankingRailCountry: string,
+    bankingRails: BankingRails,
     informationBank: InformationBankDTO,
     profileType: CounterpartyProfileType,
     informationIntermediaryBank?: InformationIntermediaryBankDTO,

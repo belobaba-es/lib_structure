@@ -1,9 +1,8 @@
 import { Address, GenericException } from "../../shared";
 import { NetworkBank } from "./enums/network_bank.enum";
-import { Counterparty } from "../../counterparty";
+import { Counterparty, CounterpartyStatus } from "../../counterparty";
 import { CounterpartyBankDTO } from "./types/counterparty_bank.type";
 import { InformationIntermediaryBankDTO } from "./types/information_intermediary_bank.type";
-import { CounterpartyStatus } from "../../counterparty/domain/enums/counterparty_status.enum";
 
 export class CounterpartyBank extends Counterparty {
   private ownerAddress: Address;
@@ -24,7 +23,6 @@ export class CounterpartyBank extends Counterparty {
   ): CounterpartyBank {
     const c: CounterpartyBank = new CounterpartyBank();
 
-    c.assetId = counterpartyBank.assetId;
     c.clientId = counterpartyBank.clientId;
     c.accountId = counterpartyBank.accountId;
     c.setOwnerName(counterpartyBank.informationOwner.name);
