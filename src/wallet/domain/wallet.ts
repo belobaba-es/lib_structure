@@ -64,7 +64,7 @@ export class Wallet extends AggregateRoot implements IWallet {
     data:
       | InstructionDepositCrypto
       | InstructionDepositFiat
-      | InstructionsAchPabType
+      | InstructionsAchPabType,
   ): Wallet {
     this.instructForDeposit = data;
     return this;
@@ -152,13 +152,13 @@ export class Wallet extends AggregateRoot implements IWallet {
     if (Number(amount) > 0) {
       this.lockedBalance = this.truncate(
         Number(this.lockedBalance) - Number(amount),
-        d
+        d,
       );
       return this;
     }
     this.lockedBalance = this.truncate(
       Number(this.lockedBalance) + Number(amount),
-      d
+      d,
     );
     return this;
   }
@@ -172,7 +172,7 @@ export class Wallet extends AggregateRoot implements IWallet {
 
     this.lockedBalance = this.truncate(
       Number(this.lockedBalance) + Number(amount),
-      d
+      d,
     );
     return this;
   }
