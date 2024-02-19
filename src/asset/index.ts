@@ -1,4 +1,4 @@
-export { AssetClassification } from "./domain/types/asset_classification.enum";
+export { AssetClassification } from "./domain/enums/asset_classification.enum";
 
 export { WalletInformationDTO } from "./domain/types/wallet_information.type";
 

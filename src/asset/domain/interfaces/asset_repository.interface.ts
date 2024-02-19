@@ -1,5 +1,5 @@
 import { Asset } from "../asset";
-import { AssetClassification } from "../types/asset_classification.enum";
+import { AssetClassification } from "../enums/asset_classification.enum";
 
 export interface IAssetRepository {
   findAssetByCode(code: string): Promise<Asset | undefined>;

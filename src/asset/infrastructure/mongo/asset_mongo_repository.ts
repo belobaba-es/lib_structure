@@ -1,7 +1,7 @@
 import { MongoClientFactory, MongoRepository } from "../../../shared";
 import { Asset } from "../../domain/asset";
 import { IAssetRepository } from "../../domain/interfaces/asset_repository.interface";
-import { AssetClassification } from "../../domain/types/asset_classification.enum";
+import { AssetClassification } from "../../domain/enums/asset_classification.enum";
 
 export class AssetMongoRepository
   extends MongoRepository<Asset>

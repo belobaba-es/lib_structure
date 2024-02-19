@@ -1,5 +1,5 @@
 import { AggregateRoot } from "../../shared/domain/aggregate_root";
-import { AssetClassification } from "./types/asset_classification.enum";
+import { AssetClassification } from "./enums/asset_classification.enum";
 
 export class Asset extends AggregateRoot {
   private id?: string;
