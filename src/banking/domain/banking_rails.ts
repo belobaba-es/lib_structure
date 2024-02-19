@@ -7,7 +7,6 @@ export class BankingRails extends AggregateRoot {
   private assetCountry: string;
   private rails: Array<string>;
   private provider: string;
-  private counterpartyType: string;
 
   getId(): string {
     return this.id;
@@ -15,10 +14,6 @@ export class BankingRails extends AggregateRoot {
 
   getCountryCode(): string {
     return this.countryCode;
-  }
-
-  getCounterpartyType(): string {
-    return this.counterpartyType;
   }
 
   getAssetCountry(): string {
@@ -33,7 +28,6 @@ export class BankingRails extends AggregateRoot {
     rail.assetCountry = data.assetCountry;
     rail.rails = data.rails;
     rail.provider = data.provider;
-    rail.counterpartyType = data.counterpartyType;
 
     return rail;
   }
@@ -45,7 +39,6 @@ export class BankingRails extends AggregateRoot {
       assetCountry: this.assetCountry,
       rails: this.rails,
       provider: this.provider,
-      counterpartyType: this.counterpartyType,
     };
   }
 }
