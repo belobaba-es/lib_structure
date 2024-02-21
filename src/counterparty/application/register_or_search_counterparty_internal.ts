@@ -71,6 +71,7 @@ export class RegisterOrSearchCounterpartyInternal {
 
       counterparty = CounterpartyBank.newCounterparty(
         {
+          assetId: asset.getAssetId(),
           profileType:
             clientDestination.getClientType() === AccountType.INDIVIDUAL
               ? CounterpartyProfileType.INDIVIDUAL
