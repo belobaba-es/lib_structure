@@ -58,6 +58,7 @@ export class Transaction extends AggregateRoot {
     t.createdAt = data.createdAt;
     t.id = id;
     t.counterparty = counterparty;
+    t.transactionId = data.transactionId;
     t.assetId = counterparty.getAssetId();
 
     return t;

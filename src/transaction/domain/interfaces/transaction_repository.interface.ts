@@ -46,4 +46,11 @@ export interface ITransactionRepository {
     transactionId: string,
     status: WithdrawalStatus,
   ): Promise<ExchangeTransaction | undefined>;
+
+  findWithdrawByAssetIdAndAmountAndStatusAndReference(
+    assetId: string,
+    amount: number,
+    status: WithdrawalStatus,
+    reference: string,
+  ): Promise<Transaction | undefined>;
 }

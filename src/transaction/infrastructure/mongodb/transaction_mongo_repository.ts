@@ -16,7 +16,7 @@ import {
   TransactionType,
 } from "../../index";
 import { Counterparty, CounterpartyType } from "../../../counterparty";
-import { CounterpartyBank } from "../../../banking";
+import { CounterpartyAchPab, CounterpartyBank } from "../../../banking";
 import { CounterpartyAsset } from "../../../asset";
 import { TransactionDeposit } from "../../domain/transaction_deposit";
 
@@ -74,6 +74,34 @@ export class TransactionMongoRepository
     );
   }
 
+  async findWithdrawByAssetIdAndAmountAndStatusAndReference(
+    assetId: string,
+    amount: number,
+    status: WithdrawalStatus,
+    reference: string,
+  ): Promise<Transaction | undefined> {
+    const collection = await this.collection();
+    const filter = {
+      assetId,
+      status,
+      amount,
+      reference,
+      transactionType: TransactionType.WITHDRAW,
+    };
+
+    const result = await collection.findOne(filter);
+    if (!result) {
+      return null;
+    }
+
+    const counterparty: Counterparty = this.buildCounterparty(result);
+    return Transaction.fromPrimitives(
+      result._id.toString(),
+      result,
+      counterparty,
+    );
+  }
+
   async findTransactionByClientId(
     accountId: string,
     initDoc: number,
@@ -119,6 +147,13 @@ export class TransactionMongoRepository
   }
 
   private buildCounterparty(result: any): Counterparty {
+    if (result.counterparty.achInstructions) {
+      return CounterpartyAchPab.fromPrimitives(
+        result.counterparty.id,
+        result.counterparty,
+      );
+    }
+
     return result.counterparty.counterpartyType == CounterpartyType.FIAT
       ? CounterpartyBank.fromPrimitives(
           result.counterparty.id,

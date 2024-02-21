@@ -2,7 +2,7 @@ import { IWalletRepository } from "../domain/interfaces/wallet_repository.interf
 import { IWallet } from "../domain/interfaces/wallet.interface";
 import { logger } from "../../index";
 
-export class UpdateLookBalanceWallet {
+export class UpdateLockedBalanceWallet {
   constructor(private readonly walletRepository: IWalletRepository) {}
 
   async run(clientId: string, assetId: string, amount: number): Promise<void> {
@@ -20,7 +20,7 @@ export class UpdateLookBalanceWallet {
       )}`,
     );
 
-    wallet.updateLookBalance(amount);
+    wallet.updateLockedBalance(amount);
 
     logger.info(
       ` clientId ${wallet.getClientId()} nuevo balance ${JSON.stringify(

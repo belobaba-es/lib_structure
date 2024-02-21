@@ -15,5 +15,5 @@ export { OriginWallet } from "./domain/enums/origin_wallet.enum";
 export { InsufficientBalance } from "./domain/exceptions/insufficient_balance";
 export { WalletNotFound } from "./domain/exceptions/wallet_not_found";
 export { ValidateBalance } from "./applications/validate_balance";
-export { UpdateLookBalanceWallet } from "./applications/update_look_balance_wallet";
+export { UpdateLockedBalanceWallet } from "./applications/update_look_balance_wallet";
 export { UpdateBalanceWallet } from "./applications/update_balance_wallet";

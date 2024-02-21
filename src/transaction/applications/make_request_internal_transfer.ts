@@ -11,7 +11,7 @@ import {
 import { Asset, IAssetRepository } from "../../asset";
 import {
   IWalletRepository,
-  UpdateLookBalanceWallet,
+  UpdateLockedBalanceWallet,
   ValidateBalance,
 } from "../../wallet";
 import { FindByClientId, IClient, IClientRepository } from "../../client";
@@ -89,7 +89,7 @@ export class MakeRequestInternalTransfer {
       `id de la solicitud de la transferencia  ${withdrawalRequest.getWithdrawalId()}`,
     );
 
-    await new UpdateLookBalanceWallet(this.walletRepository).run(
+    await new UpdateLockedBalanceWallet(this.walletRepository).run(
       clientOrigin.getClientId(),
       asset.getAssetId(),
       amount,
