@@ -23,6 +23,8 @@ export class CounterpartyBank extends Counterparty {
   ): CounterpartyBank {
     const c: CounterpartyBank = new CounterpartyBank();
 
+    c.assetId = counterpartyBank.assetId;
+
     c.clientId = counterpartyBank.clientId;
     c.accountId = counterpartyBank.accountId;
     c.setOwnerName(counterpartyBank.informationOwner.name);
