@@ -199,7 +199,7 @@ export class Wallet extends AggregateRoot implements IWallet {
       d = 8;
     }
 
-    const positiveAmount = amount > 0 ? amount : amount * +1;
+    const positiveAmount = amount > 0 ? amount : amount * -1;
     this.setNewBalance(
       Number((Number(this.getBalance()) + Number(positiveAmount)).toFixed(d)),
       this.getLockedBalance(),
@@ -215,17 +215,21 @@ export class Wallet extends AggregateRoot implements IWallet {
       d = 8;
     }
 
-    const positiveAmount = amount > 0 ? amount : amount * +1;
+    const positiveAmount = amount > 0 ? amount : amount * -1;
     const positiveLockedBalance =
       this.getLockedBalance() > 0
         ? this.getLockedBalance()
-        : this.getLockedBalance() * +1;
+        : this.getLockedBalance() * -1;
+
+    const newLockedBalance = Number(
+      (Number(positiveLockedBalance) - Number(positiveAmount)).toFixed(d),
+    );
+    const negativeLockedBalance =
+      newLockedBalance > 0 ? newLockedBalance * -1 : newLockedBalance;
 
     this.setNewBalance(
       Number((Number(this.getBalance()) - Number(positiveAmount)).toFixed(d)),
-      Number(
-        (Number(positiveLockedBalance) + Number(positiveAmount)).toFixed(d),
-      ),
+      negativeLockedBalance,
     );
 
     return this;

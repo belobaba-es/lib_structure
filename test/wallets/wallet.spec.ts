@@ -163,6 +163,36 @@ describe("Wallet", () => {
 
     console.log("===== withdrawalId", withdrawalId);
   });
+
+  it("Should debitFunds:  update balance and locked balance", async () => {
+    const clientId = "MSerrano181263254";
+    const txAmount = -10;
+
+    const wallet =
+      await WalletMongoRepository.instance().findWalletsByClientIdAndAssetId(
+        clientId,
+        "FIAT_TESTNET_PAB",
+      );
+
+    wallet.debitFunds(txAmount);
+
+    await WalletMongoRepository.instance().updateBalance(wallet);
+  });
+
+  it("Should addFunds:  update balance", async () => {
+    const clientId = "MSerrano181263254";
+    const txAmount = -10;
+
+    const wallet =
+      await WalletMongoRepository.instance().findWalletsByClientIdAndAssetId(
+        clientId,
+        "FIAT_TESTNET_PAB",
+      );
+
+    wallet.addFunds(txAmount);
+
+    await WalletMongoRepository.instance().updateBalance(wallet);
+  });
 });
 
 // 2nd step create withdrawal request, transaction and updating balance
@@ -267,9 +297,9 @@ const updateACHWallet = async (
 
   if (isCredit) {
     /*wallet.setNewBalance(
-                          wallet.getBalance() + amount,
-                          wallet.getLockedBalance(),
-                        );*/
+                                                                      wallet.getBalance() + amount,
+                                                                      wallet.getLockedBalance(),
+                                                                    );*/
     wallet.addFunds(amount);
   } else {
     wallet.setNewBalance(
