@@ -192,16 +192,40 @@ export class Wallet extends AggregateRoot implements IWallet {
     return this;
   }
 
-  releaseFunds(amount: number): IWallet {
+  addFunds(amount: number): IWallet {
     let d = 3;
 
     if (this.getAsset().isCryptoAsset()) {
       d = 8;
     }
 
+    const positiveAmount = amount > 0 ? amount : amount * +1;
     this.setNewBalance(
-      Number((Number(this.getBalance()) + Number(amount)).toFixed(d)),
+      Number((Number(this.getBalance()) + Number(positiveAmount)).toFixed(d)),
       this.getLockedBalance(),
+    );
+
+    return this;
+  }
+
+  debitFunds(amount: number): IWallet {
+    let d = 3;
+
+    if (this.getAsset().isCryptoAsset()) {
+      d = 8;
+    }
+
+    const positiveAmount = amount > 0 ? amount : amount * +1;
+    const positiveLockedBalance =
+      this.getLockedBalance() > 0
+        ? this.getLockedBalance()
+        : this.getLockedBalance() * +1;
+
+    this.setNewBalance(
+      Number((Number(this.getBalance()) - Number(positiveAmount)).toFixed(d)),
+      Number(
+        (Number(positiveLockedBalance) + Number(positiveAmount)).toFixed(d),
+      ),
     );
 
     return this;

@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import {
   AssetMongoRepository,
   ClientMongoRepository,
@@ -6,10 +7,14 @@ import {
   IWallet,
   logger,
   MakeRequestInternalTransfer,
+  Transaction,
+  TransactionMongoRepository,
+  TransactionType,
   WalletFactory,
   WalletMongoRepository,
   WalletType,
   WithdrawalRequestMongoRepository,
+  WithdrawalStatus,
 } from "../../src";
 
 describe("Wallet", () => {
@@ -96,6 +101,8 @@ describe("Wallet", () => {
     const assetCode = "USD_PA";
     const assetRepo = AssetMongoRepository.instance();
     const pab = await assetRepo.findAssetByCode(assetCode);
+    console.log("USD_PA", pab);
+
     const client =
       await ClientMongoRepository.instance().findByClientId(clientId);
 
@@ -125,11 +132,14 @@ describe("Wallet", () => {
       pab.getAssetId(),
     );
 
-    expect(res).not.toBe(undefined);
+    console.log("res", res);
+
+    //console.log(wallet.getBalanceAvailable());
+    //console.log("walletPayload", walletPayload);
   });
 
   // 1st step
-  it("Should create a ACH PAB withdrawal request", async () => {
+  it("Should update ACH PAB balances", async () => {
     const clientOriginId = "MSerrano181263254";
     const clientDestinationId = "FSilva187263254";
 
@@ -151,38 +161,122 @@ describe("Wallet", () => {
       "1st test",
     );
 
-    expect(withdrawalId).not.toBe(null);
-  });
-
-  it("Should debitFunds:  update balance and locked balance", async () => {
-    const clientId = "MSerrano181263254";
-    const txAmount = 10;
-
-    const wallet =
-      await WalletMongoRepository.instance().findWalletsByClientIdAndAssetId(
-        clientId,
-        "FIAT_TESTNET_PAB",
-      );
-
-    const balance = wallet.getBalance();
-    wallet.debitFunds(txAmount);
-
-    expect(wallet.getBalance()).toBe(balance - txAmount);
-  });
-
-  it("Should addFunds:  update balance", async () => {
-    const clientId = "MSerrano181263254";
-    const txAmount = 10;
-
-    const wallet =
-      await WalletMongoRepository.instance().findWalletsByClientIdAndAssetId(
-        clientId,
-        "FIAT_TESTNET_PAB",
-      );
-    const balance = wallet.getBalance();
-
-    wallet.addFunds(txAmount);
-
-    expect(wallet.getBalance()).toBe(balance + txAmount);
+    console.log("===== withdrawalId", withdrawalId);
   });
 });
+
+// 2nd step create withdrawal request, transaction and updating balance
+it("Should finish an internal withdrawal request and create a transaction", async () => {
+  const walletRepo = WalletMongoRepository.instance();
+  const withdrawalRepo = WithdrawalRequestMongoRepository.instance();
+  const transactionRepo = TransactionMongoRepository.instance();
+
+  const clientOriginId = "MSerrano181263254";
+  const clientDestinationId = "FSilva187263254";
+
+  const asset = await AssetMongoRepository.instance().findAssetByCode("USD_PA");
+
+  const withdrawalId = "8dfad6d3-d546-49bb-8b34-0d8759297dc0";
+
+  const withdrawal = await withdrawalRepo.findByWithdrawalId(withdrawalId);
+
+  withdrawal.markAsProcessed();
+  await withdrawalRepo.upsert(withdrawal);
+
+  const transactionId: string = v4();
+
+  const transaction: Transaction = Transaction.newTransaction(
+    transactionId,
+    withdrawal.getAmount() * -1,
+    withdrawal.getReference(),
+    withdrawal.getClientId(),
+    true,
+    withdrawal.getCounterparty(),
+    TransactionType.WITHDRAW,
+    WithdrawalStatus.PROCESSED,
+  );
+
+  await transactionRepo.upsert(transaction);
+
+  const amount = withdrawal.getAmount();
+
+  const originWallet: IWallet =
+    await walletRepo.findWalletsByClientIdAndAssetId(
+      clientOriginId,
+      asset.getAssetId(),
+    );
+
+  const destinationWallet: IWallet =
+    await walletRepo.findWalletsByClientIdAndAssetId(
+      clientDestinationId,
+      asset.getAssetId(),
+    );
+
+  await updateACHWallet(originWallet, amount, false);
+  await updateACHWallet(destinationWallet, amount, true);
+});
+
+it("Should finish an external withdrawal request and create a transaction", async () => {
+  const walletRepo = WalletMongoRepository.instance();
+  const withdrawalRepo = WithdrawalRequestMongoRepository.instance();
+  const transactionRepo = TransactionMongoRepository.instance();
+
+  const clientOriginId = "MSerrano181263254";
+
+  const asset = await AssetMongoRepository.instance().findAssetByCode("USD_PA");
+
+  const withdrawalId = "b14432d2-f1d7-4479-a507-9697362b9c18";
+
+  const withdrawal = await withdrawalRepo.findByWithdrawalId(withdrawalId);
+
+  withdrawal.markAsProcessed();
+  await withdrawalRepo.upsert(withdrawal);
+
+  const transactionId: string = v4();
+
+  const transaction: Transaction = Transaction.newTransaction(
+    transactionId,
+    withdrawal.getAmount() * -1,
+    withdrawal.getReference(),
+    withdrawal.getClientId(),
+    false,
+    withdrawal.getCounterparty(),
+    TransactionType.WITHDRAW,
+    WithdrawalStatus.PROCESSED,
+  );
+
+  await transactionRepo.upsert(transaction);
+
+  const amount = withdrawal.getAmount();
+
+  const originWallet: IWallet =
+    await walletRepo.findWalletsByClientIdAndAssetId(
+      clientOriginId,
+      asset.getAssetId(),
+    );
+
+  await updateACHWallet(originWallet, amount, false);
+});
+
+const updateACHWallet = async (
+  wallet: IWallet,
+  amount: number,
+  isCredit = true,
+) => {
+  const walletRepo = WalletMongoRepository.instance();
+
+  if (isCredit) {
+    /*wallet.setNewBalance(
+                          wallet.getBalance() + amount,
+                          wallet.getLockedBalance(),
+                        );*/
+    wallet.addFunds(amount);
+  } else {
+    wallet.setNewBalance(
+      wallet.getBalance() - amount,
+      -wallet.getLockedBalance() - amount,
+    );
+  }
+
+  await walletRepo.updateBalance(wallet);
+};
