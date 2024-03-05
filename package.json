@@ -1,6 +1,6 @@
 {
   "name": "@pinttosoft/structure",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Libreria de dominio e infraestructura para la estrcutura de cuentas segregadas",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
