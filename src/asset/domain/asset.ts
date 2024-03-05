@@ -73,7 +73,7 @@ export class Asset extends AggregateRoot {
   }
 
   isCryptoAsset(): boolean {
-    return this.code !== "USD";
+    return this.assetClassification === AssetClassification.CRYPTO;
   }
 
   toPrimitives(): any {

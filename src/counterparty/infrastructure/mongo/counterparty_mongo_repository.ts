@@ -10,7 +10,7 @@ import {
   CounterpartyType,
   ICounterpartyRepository,
 } from "../../index";
-import { CounterpartyBank } from "../../../banking";
+import { CounterpartyAchPab, CounterpartyBank } from "../../../banking";
 import { CounterpartyAsset } from "../../../asset";
 
 export class CounterpartyMongoRepository
@@ -85,6 +85,10 @@ export class CounterpartyMongoRepository
       return CounterpartyAsset.fromPrimitives(result._id.toString(), result);
     }
 
+    if (result.achInstructions) {
+      return CounterpartyAchPab.fromPrimitives(result._id.toString(), result);
+    }
+
     return CounterpartyBank.fromPrimitives(result._id.toString(), result);
   }
 
@@ -107,6 +111,10 @@ export class CounterpartyMongoRepository
       return CounterpartyAsset.fromPrimitives(result._id.toString(), result);
     }
 
+    if (result.achInstructions) {
+      return CounterpartyAchPab.fromPrimitives(result._id.toString(), result);
+    }
+
     return CounterpartyBank.fromPrimitives(result._id.toString(), result);
   }
 
@@ -117,6 +125,11 @@ export class CounterpartyMongoRepository
       if (d.counterpartyType === CounterpartyType.CRYPTO) {
         return CounterpartyAsset.fromPrimitives(d._id.toString(), d);
       }
+
+      if (d.achInstructions) {
+        return CounterpartyAchPab.fromPrimitives(d._id.toString(), d);
+      }
+
       return CounterpartyBank.fromPrimitives(d._id.toString(), d);
     });
 
@@ -162,6 +175,11 @@ export class CounterpartyMongoRepository
 
     if (!result) {
       return undefined;
+    }
+
+    if (result.achInstructions) {
+      console.log("achInstructions", result.achInstructions);
+      return CounterpartyAchPab.fromPrimitives(result._id.toString(), result);
     }
 
     if (result.counterpartyType === CounterpartyType.CRYPTO) {

@@ -142,10 +142,7 @@ export class Wallet extends AggregateRoot implements IWallet {
   updateLockedBalance(amount: number): IWallet {
     let d = 3;
 
-    if (
-      this.getAsset().getAssetCode() !== "USD" &&
-      this.getAsset().getAssetCode() !== "USD_PA"
-    ) {
+    if (this.getAsset().isCryptoAsset()) {
       d = 8;
     }
 
@@ -166,7 +163,7 @@ export class Wallet extends AggregateRoot implements IWallet {
   releaseBlockedBalance(amount: number): IWallet {
     let d = 3;
 
-    if (this.getAsset().getAssetCode() !== "USD") {
+    if (this.getAsset().isCryptoAsset()) {
       d = 8;
     }
 
@@ -180,7 +177,7 @@ export class Wallet extends AggregateRoot implements IWallet {
   updateBalance(amount: number): IWallet {
     let d = 3;
 
-    if (this.getAsset().getAssetCode() !== "USD") {
+    if (this.getAsset().isCryptoAsset()) {
       d = 8;
     }
 
@@ -192,6 +189,39 @@ export class Wallet extends AggregateRoot implements IWallet {
   setNewBalance(balance: number, lockedBalance: number): IWallet {
     this.balance = balance;
     this.lockedBalance = lockedBalance;
+    return this;
+  }
+
+  addFunds(amount: number): IWallet {
+    let d = 3;
+
+    if (this.getAsset().isCryptoAsset()) {
+      d = 8;
+    }
+
+    const positiveAmount = amount > 0 ? amount : amount * -1;
+    this.setNewBalance(
+      Number((Number(this.getBalance()) + Number(positiveAmount)).toFixed(d)),
+      this.getLockedBalance(),
+    );
+
+    return this;
+  }
+
+  debitFunds(amount: number): IWallet {
+    let d = 3;
+
+    if (this.getAsset().isCryptoAsset()) {
+      d = 8;
+    }
+
+    const positiveAmount = amount > 0 ? amount : amount * -1;
+
+    this.setNewBalance(
+      Number((Number(this.getBalance()) - Number(positiveAmount)).toFixed(d)),
+      this.getLockedBalance(),
+    );
+
     return this;
   }
 

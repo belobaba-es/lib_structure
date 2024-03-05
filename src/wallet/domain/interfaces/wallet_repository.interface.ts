@@ -16,6 +16,11 @@ export interface IWalletRepository {
     assetId: string,
   ): Promise<IWallet | undefined>;
 
+  findWalletsByClientIdAndAssetCode(
+    clientId: string,
+    assetCode: string,
+  ): Promise<IWallet | undefined>;
+
   findPaymentAddressesByClientIdAndByAssetId(
     clientId: string,
     assetId?: string,

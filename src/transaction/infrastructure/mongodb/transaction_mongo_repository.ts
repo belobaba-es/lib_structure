@@ -74,18 +74,18 @@ export class TransactionMongoRepository
     );
   }
 
-  async findWithdrawByAssetIdAndAmountAndStatusAndReference(
+  async findTransactionByAssetIdAmountStatusClientId(
     assetId: string,
     amount: number,
     status: WithdrawalStatus,
-    reference: string,
+    clientId: string,
   ): Promise<Transaction | undefined> {
     const collection = await this.collection();
     const filter = {
       assetId,
       status,
       amount,
-      reference,
+      clientId,
       transactionType: TransactionType.WITHDRAW,
     };
 

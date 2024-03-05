@@ -4,4 +4,5 @@ export type ComissionCollectionRequestType = {
   withdrawalId: string;
   typeFinancialMovement: TypeFinancialMovement;
   transactionId: string;
+  assetCode?: string;
 };

@@ -13,10 +13,7 @@ import { WithdrawalRequest } from "../../domain/withdrawal_request";
 import {
   Counterparty,
   CounterpartyMongoRepository,
-  CounterpartyType,
 } from "../../../counterparty";
-import { CounterpartyAsset } from "../../../asset";
-import { CounterpartyBank } from "../../../banking";
 import { logger } from "../../../index";
 
 export class WithdrawalRequestMongoRepository

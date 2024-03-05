@@ -16,9 +16,11 @@ import {
 } from "../../shared";
 import { InvalidMethodForClientType } from "./exceptions/invalid_method_client_type";
 import { ResidencyStatus } from "./enums/residency_status";
-import { FeeSwap, FeeWire } from "../../system_configuration";
+import { FeeACHPanama, FeeSwap, FeeWire } from "../../system_configuration";
 import { Documents } from "../../documents";
 import { KycAction } from "./types/kyc-action.type";
+import { InvestmentProfile } from "./types/investment-profile.type";
+import { KycProfileType } from "./types/kyc-profile.type";
 
 export class Client extends AggregateRoot implements IClient {
   private clientId: string;
@@ -33,6 +35,7 @@ export class Client extends AggregateRoot implements IClient {
   private status: AccountStatus;
   private feeSwap?: FeeSwap;
   private feeWire?: FeeWire;
+  private feeACHPanama?: FeeACHPanama;
   private documents: Documents[] = [];
   private companyPartners: IOwnerAccount[] = [];
   private twoFactorActive: boolean = false;
@@ -76,6 +79,11 @@ export class Client extends AggregateRoot implements IClient {
 
   setFeeSwap(fee: FeeSwap): Client {
     this.feeSwap = fee;
+    return this;
+  }
+
+  setFeeACHPanama(fee: FeeACHPanama) {
+    this.feeACHPanama = fee;
     return this;
   }
 
@@ -304,6 +312,10 @@ export class Client extends AggregateRoot implements IClient {
     return this.feeWire;
   }
 
+  getFeeACHPanama(): FeeACHPanama {
+    return this.feeACHPanama;
+  }
+
   activeTwoFactorAuth(): void {
     this.twoFactorActive = true;
   }
@@ -448,6 +460,33 @@ export class Client extends AggregateRoot implements IClient {
     return this.documents;
   }
 
+  getInvestmentProfile(): InvestmentProfile {
+    return {
+      monthlyCryptoDeposits: this.clientData.monthlyCryptoDeposits ?? "",
+      monthlyCryptoInvestmentDeposit:
+        this.clientData.monthlyCryptoInvestmentDeposit ?? "",
+      monthlyCryptoInvestmentWithdrawal:
+        this.clientData.monthlyCryptoInvestmentWithdrawal ?? "",
+      monthlyCryptoWithdrawals: this.clientData.monthlyCryptoWithdrawals ?? "",
+      monthlyDeposits: this.clientData.monthlyDeposits ?? "",
+      monthlyInvestmentDeposit: this.clientData.monthlyInvestmentDeposit ?? "",
+      monthlyInvestmentWithdrawal:
+        this.clientData.monthlyInvestmentWithdrawal ?? "",
+      monthlyWithdrawals: this.clientData.monthlyWithdrawals ?? "",
+      primarySourceOfFunds: this.clientData.primarySourceOfFunds ?? "",
+      usdValueOfCrypto: this.clientData.usdValueOfCrypto ?? "",
+      usdValueOfFiat: this.clientData.usdValueOfFiat ?? "",
+    };
+  }
+
+  getKYCProfile(): KycProfileType {
+    return {
+      fundsSendReceiveJurisdictions:
+        this.clientData.fundsSendReceiveJurisdictions ?? "",
+      engageInActivities: this.clientData.engageInActivities ?? "",
+    };
+  }
+
   toPrimitives(): any {
     return {
       isSegregated: this.isSegregated,
@@ -458,6 +497,7 @@ export class Client extends AggregateRoot implements IClient {
       status: this.status,
       feeSwap: this.feeSwap.toPrimitives(),
       feeWire: this.feeWire.toPrimitives(),
+      FeeACHPanama: this.feeACHPanama ? this.feeACHPanama.toPrimitives() : null,
       documents: this.documents.map((d: Documents) => d.toPrimitives()),
       twoFactorActive: this.twoFactorActive,
       createdAt: this.createdAt,

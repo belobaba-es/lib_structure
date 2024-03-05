@@ -1,19 +1,13 @@
 import {
-  IWallet,
-  WalletFactory,
-  IWalletRepository,
   InstructionDepositCrypto,
+  IWallet,
+  IWalletRepository,
+  WalletFactory,
 } from "../../../wallet";
-import {
-  MongoClientFactory,
-  MongoRepository,
-  Operator,
-  Paginate,
-} from "../../../shared";
+import { MongoClientFactory, MongoRepository, Paginate } from "../../../shared";
 import { ObjectId } from "mongodb";
 import { ClientMongoRepository } from "../../../client";
 import { AssetMongoRepository } from "../../../asset";
-import { Transaction } from "../../../transaction";
 
 interface WalletDocument {
   _id: ObjectId;
@@ -196,6 +190,29 @@ export class WalletMongoRepository
     const result = await collection.findOne<WalletDocument>({
       clientId,
       assetId,
+    });
+
+    if (!result) {
+      return undefined;
+    }
+
+    return WalletFactory.fromPrimitives(
+      result._id.toString(),
+      result,
+      await ClientMongoRepository.instance().findByClientId(clientId),
+      await AssetMongoRepository.instance().findById(result.assetId),
+    );
+  }
+
+  async findWalletsByClientIdAndAssetCode(
+    clientId: string,
+    assetCode: string,
+  ): Promise<IWallet | undefined> {
+    const collection = await this.collection();
+
+    const result = await collection.findOne<WalletDocument>({
+      clientId,
+      assetCode,
     });
 
     if (!result) {

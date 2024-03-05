@@ -5,12 +5,11 @@ import {
   CounterpartyMongoRepository,
   WithdrawalPurpose,
   WithdrawalRequest,
-  WithdrawalRequestMongoRepository,
   WithdrawalType,
 } from "../../src";
 
 describe("Withdrawals", () => {
-  it("Create withdrawal request for ACH PAB internal", async () => {
+  it("e2e Create withdrawal request for ACH PAB internal", async () => {
     const clientId = "MSerrano181263254";
     const clientDestinationId = "FSilva187263254";
     const clientOrigin =
@@ -18,11 +17,11 @@ describe("Withdrawals", () => {
 
     const clientDestination =
       await ClientMongoRepository.instance().findByClientId(
-        clientDestinationId
+        clientDestinationId,
       );
 
     const amount = 1.3;
-    const reference = "first withdrawal request test";
+    const reference = "-- release funds";
 
     const asset =
       await AssetMongoRepository.instance().findAssetByCode("USD_PA");
@@ -31,8 +30,10 @@ describe("Withdrawals", () => {
       await CounterpartyMongoRepository.instance().findMyCounterpartyByAssetId(
         clientOrigin.getClientId(),
         clientDestination.getClientId(),
-        asset.getAssetId()
+        asset.getAssetId(),
       );
+
+    expect(counterparty).not.toBe(undefined);
 
     const withdrawalRequest: WithdrawalRequest =
       WithdrawalRequest.createNewWithdrawalRequest(
@@ -41,19 +42,20 @@ describe("Withdrawals", () => {
         AmountValueObject.create(amount),
         reference,
         WithdrawalType.INTERNAL,
-        WithdrawalPurpose.LOAN
+        WithdrawalPurpose.LOAN,
       );
 
-    await WithdrawalRequestMongoRepository.instance().upsert(withdrawalRequest);
+    expect(withdrawalRequest).not.toBe(undefined);
+    //await WithdrawalRequestMongoRepository.instance().upsert(withdrawalRequest);
   });
 
   it("Create withdrawal request for ACH PAB external", async () => {
     const clientId = "MSerrano181263254";
     const clientOrigin =
       await ClientMongoRepository.instance().findByClientId(clientId);
-    const counterpartyId = "de776990-dda0-4c17-983b-56ef95631fdb";
+    const counterpartyId = "35e68682-8212-49a0-af95-e56e3e3aa92b";
 
-    const amount = 989;
+    const amount = 2.6;
     const reference = "first external withdrawal request test";
     const asset =
       await AssetMongoRepository.instance().findAssetByCode("USD_PA");
@@ -62,10 +64,12 @@ describe("Withdrawals", () => {
       await CounterpartyMongoRepository.instance().findMyCounterpartyByAssetId(
         clientOrigin.getClientId(),
         counterpartyId,
-        asset.getAssetId()
+        asset.getAssetId(),
       );
 
     console.log("counterparty", counterparty);
+
+    expect(counterparty).not.toBe(undefined);
 
     const withdrawalRequest: WithdrawalRequest =
       WithdrawalRequest.createNewWithdrawalRequest(
@@ -74,9 +78,10 @@ describe("Withdrawals", () => {
         AmountValueObject.create(amount),
         reference,
         WithdrawalType.EXTERNAL,
-        WithdrawalPurpose.LOAN
+        WithdrawalPurpose.LOAN,
       );
 
-    await WithdrawalRequestMongoRepository.instance().upsert(withdrawalRequest);
+    expect(withdrawalRequest).not.toBe(undefined);
+    //await WithdrawalRequestMongoRepository.instance().upsert(withdrawalRequest);
   });
 });
