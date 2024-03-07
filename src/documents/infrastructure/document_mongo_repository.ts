@@ -77,7 +77,7 @@ export class DocumentMongoRepository
     await collection.updateOne(
       { clientId: document.getClientId() },
       {
-        $push: {
+        $set: {
           documents: document.toPrimitives(),
         },
       },

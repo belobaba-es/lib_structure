@@ -50,7 +50,7 @@ export class BusinessAllieMongoRepository
 
     await collection.updateOne(
       { clientId },
-      { $push: { businessOpportunities: opportunityPayload } },
+      { $set: { businessOpportunities: opportunityPayload } },
       { upsert: true },
     );
 
