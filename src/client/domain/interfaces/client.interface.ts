@@ -99,4 +99,8 @@ export interface IClient {
   getInvestmentProfile(): InvestmentProfile;
 
   getKYCProfile(): KycProfileType;
+
+  getOccupation(): string;
+
+  getEmploymentStatus(): string;
 }
