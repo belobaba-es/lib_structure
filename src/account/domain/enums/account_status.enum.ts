@@ -5,4 +5,5 @@ export enum AccountStatus {
   REJECTED = "REJECTED",
   SUBMITTED = "SUBMITTED",
   PROCESSING = "PROCESSING",
+  FROZEN = "FROZEN",
 }
