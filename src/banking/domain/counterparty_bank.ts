@@ -91,6 +91,13 @@ export class CounterpartyBank extends Counterparty {
     counterparty.swiftCode = data.swiftCode ?? undefined;
     counterparty.bankAddress = { ...informationBank.address } as Address;
 
+    if ("informationIntermediaryBank" in data) {
+      counterparty.informationIntermediaryBank = {
+        ...data.informationIntermediaryBank,
+      };
+    }
+    counterparty.iban = data.iban ?? "";
+
     counterparty.profileType = data.profileType ?? "";
 
     counterparty.bankName = informationBank.bankName;
@@ -169,6 +176,7 @@ export class CounterpartyBank extends Counterparty {
       informationBank: this.getInformationBank(),
       informationIntermediaryBank: this.getInformationIntermediaryBank(),
       isInternal: this.isInternal === true ? "S" : "N",
+      profileType: this.profileType,
       createdAt: this.createdAt,
       status: this.status,
     };
