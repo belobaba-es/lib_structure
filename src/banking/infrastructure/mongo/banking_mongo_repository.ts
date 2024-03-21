@@ -34,6 +34,16 @@ export class BankingMongoRepository
       return undefined;
     }
 
-    return new BankingRails().fromPrimitives({ id: result._id, ...result });
+    return BankingRails.fromPrimitives({ id: result._id, ...result });
+  }
+
+  async findAllBankingRails(): Promise<BankingRails[]> {
+    const collection = await this.collection();
+    const result = await collection.find().sort("countryName", 1).toArray();
+    if (!result) {
+      return [];
+    }
+
+    return result.map((r) => BankingRails.fromPrimitives({ id: r._id, ...r }));
   }
 }

@@ -4,4 +4,6 @@ export interface IBankingRepository {
   findBankingRailByCountryCode(
     countryCode: string,
   ): Promise<BankingRails | undefined>;
+
+  findAllBankingRails(): Promise<BankingRails[]>;
 }
