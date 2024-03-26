@@ -72,6 +72,11 @@ export class Client extends AggregateRoot implements IClient {
     return this;
   }
 
+  setAccountId(accountId: string): Client {
+    this.accountId = accountId;
+    return this;
+  }
+
   setFeeWire(fee: FeeWire): Client {
     this.feeWire = fee;
     return this;
@@ -131,8 +136,8 @@ export class Client extends AggregateRoot implements IClient {
   getCompanyPartners(): IndividualDTO[] | undefined {
     if (this.clientType === AccountType.INDIVIDUAL) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getCompanyToPrimitives",
+        this.clientType,
+        "getCompanyToPrimitives",
       );
     }
 
@@ -164,13 +169,13 @@ export class Client extends AggregateRoot implements IClient {
   build(): void {
     if (this.clientType == AccountType.COMPANY) {
       this.clientId =
-          this.clientData.informationCompany.name.replace(" ", "-") +
-          this.clientData.informationCompany.registerNumber;
+        this.clientData.informationCompany.name.replace(" ", "-") +
+        this.clientData.informationCompany.registerNumber;
     } else {
       this.clientId =
-          this.clientData.firstName.substring(0, 1) +
-          this.clientData.lastName.replace(" ", "-") +
-          this.clientData.dni;
+        this.clientData.firstName.substring(0, 1) +
+        this.clientData.lastName.replace(" ", "-") +
+        this.clientData.dni;
     }
 
     this.clientId = removeAccents(this.clientId).replace(/\s/g, "-");
@@ -179,8 +184,8 @@ export class Client extends AggregateRoot implements IClient {
   getCompanyToPrimitives(): CompanyDTO {
     if (this.clientType === AccountType.INDIVIDUAL) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getCompanyToPrimitives",
+        this.clientType,
+        "getCompanyToPrimitives",
       );
     }
     return this.clientData as CompanyDTO;
@@ -199,8 +204,8 @@ export class Client extends AggregateRoot implements IClient {
   getEstablishedDate(): Date {
     if (this.clientType === AccountType.INDIVIDUAL) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getEstablishedDate",
+        this.clientType,
+        "getEstablishedDate",
       );
     }
     return this.clientData.informationCompany.establishedDate;
@@ -216,8 +221,8 @@ export class Client extends AggregateRoot implements IClient {
   getEmploymentStatus() {
     if (this.clientType !== AccountType.INDIVIDUAL) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getEmploymentStatus",
+        this.clientType,
+        "getEmploymentStatus",
       );
     }
     return this.clientData.employmentStatus;
@@ -241,11 +246,11 @@ export class Client extends AggregateRoot implements IClient {
   getName(): string {
     if (this.clientType == AccountType.INDIVIDUAL) {
       return (
-          this.clientData.firstName +
-          " " +
-          this.clientData.middleName +
-          " " +
-          this.clientData.lastName
+        this.clientData.firstName +
+        " " +
+        this.clientData.middleName +
+        " " +
+        this.clientData.lastName
       );
     }
 
@@ -259,7 +264,7 @@ export class Client extends AggregateRoot implements IClient {
   getIDNumber(): string {
     if (this.clientType === AccountType.COMPANY) {
       return (this.toPrimitives() as CompanyDTO).informationCompany
-          .registerNumber;
+        .registerNumber;
     } else {
       return (this.toPrimitives() as IndividualDTO).dni;
     }
@@ -269,7 +274,7 @@ export class Client extends AggregateRoot implements IClient {
     const d = this.toPrimitives();
     if (this.clientType === AccountType.COMPANY) {
       return (this.toPrimitives() as CompanyDTO).informationCompany
-          .physicalAddress;
+        .physicalAddress;
     }
 
     return {
@@ -295,8 +300,8 @@ export class Client extends AggregateRoot implements IClient {
   getPassportNumber(): string {
     if (this.clientType === AccountType.COMPANY) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getPassportNumber",
+        this.clientType,
+        "getPassportNumber",
       );
     }
     return this.clientData.passport;
@@ -313,8 +318,8 @@ export class Client extends AggregateRoot implements IClient {
   getResidencyStatus(): ResidencyStatus {
     if (this.clientType === AccountType.COMPANY) {
       throw new InvalidMethodForClientType(
-          this.clientType,
-          "getResidencyStatus",
+        this.clientType,
+        "getResidencyStatus",
       );
     }
 
@@ -422,7 +427,7 @@ export class Client extends AggregateRoot implements IClient {
     }
 
     const foundActionIndex = this.kycRequestedChanges.findIndex(
-        (action: KycAction): boolean => action.id === id,
+      (action: KycAction): boolean => action.id === id,
     );
 
     if (foundActionIndex === -1) {
@@ -440,7 +445,7 @@ export class Client extends AggregateRoot implements IClient {
     }
 
     const foundPartnerIndex = partners.findIndex(
-        (partner): boolean => partner.dni === kycAction.dni,
+      (partner): boolean => partner.dni === kycAction.dni,
     );
 
     if (foundPartnerIndex === -1) {
@@ -448,9 +453,9 @@ export class Client extends AggregateRoot implements IClient {
     }
 
     const foundActionIndex = partners[
-        foundPartnerIndex
-        ].kycRequestedChanges.findIndex(
-        (action): boolean => action.id === kycAction.id,
+      foundPartnerIndex
+    ].kycRequestedChanges.findIndex(
+      (action): boolean => action.id === kycAction.id,
     );
 
     if (foundActionIndex === -1) {
@@ -478,29 +483,38 @@ export class Client extends AggregateRoot implements IClient {
   }
 
   getInvestmentProfile(): InvestmentProfile {
-    return {
-      monthlyCryptoDeposits: this.clientData.monthlyCryptoDeposits ?? "",
-      monthlyCryptoInvestmentDeposit:
+    if (this.clientType === AccountType.INDIVIDUAL) {
+      return {
+        monthlyCryptoDeposits: this.clientData.monthlyCryptoDeposits ?? "",
+        monthlyCryptoInvestmentDeposit:
           this.clientData.monthlyCryptoInvestmentDeposit ?? "",
-      monthlyCryptoInvestmentWithdrawal:
+        monthlyCryptoInvestmentWithdrawal:
           this.clientData.monthlyCryptoInvestmentWithdrawal ?? "",
-      monthlyCryptoWithdrawals: this.clientData.monthlyCryptoWithdrawals ?? "",
-      monthlyDeposits: this.clientData.monthlyDeposits ?? "",
-      monthlyInvestmentDeposit: this.clientData.monthlyInvestmentDeposit ?? "",
-      monthlyInvestmentWithdrawal:
+        monthlyCryptoWithdrawals:
+          this.clientData.monthlyCryptoWithdrawals ?? "",
+        monthlyDeposits: this.clientData.monthlyDeposits ?? "",
+        monthlyInvestmentDeposit:
+          this.clientData.monthlyInvestmentDeposit ?? "",
+        monthlyInvestmentWithdrawal:
           this.clientData.monthlyInvestmentWithdrawal ?? "",
-      monthlyWithdrawals: this.clientData.monthlyWithdrawals ?? "",
-      primarySourceOfFunds: this.clientData.primarySourceOfFunds ?? "",
-      usdValueOfCrypto: this.clientData.usdValueOfCrypto ?? "",
-      usdValueOfFiat: this.clientData.usdValueOfFiat ?? "",
-    };
+        monthlyWithdrawals: this.clientData.monthlyWithdrawals ?? "",
+        primarySourceOfFunds: this.clientData.primarySourceOfFunds ?? "",
+        usdValueOfCrypto: this.clientData.usdValueOfCrypto ?? "",
+        usdValueOfFiat: this.clientData.usdValueOfFiat ?? "",
+      };
+    }
+
+    return this.clientData.investmentProfile;
   }
 
   getKYCProfile(): KycProfileType {
     return {
+      businessJurisdictions: this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
       fundsSendReceiveJurisdictions:
-          this.clientData.fundsSendReceiveJurisdictions ?? "",
-      engageInActivities: this.clientData.engageInActivities ?? "",
+          this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
+      engageInActivities: this.clientData.kycProfile.engageInActivities ?? "",
+      regulatedStatus: this.clientData.kycProfile.regulatedStatus
+
     };
   }
 
@@ -514,7 +528,7 @@ export class Client extends AggregateRoot implements IClient {
       status: this.status,
       feeSwap: this.feeSwap.toPrimitives(),
       feeWire: this.feeWire.toPrimitives(),
-      FeeACHPanama: this.feeACHPanama ? this.feeACHPanama.toPrimitives() : null,
+      feeACHPanama: this.feeACHPanama ? this.feeACHPanama.toPrimitives() : null,
       documents: this.documents.map((d: Documents) => d.toPrimitives()),
       twoFactorActive: this.twoFactorActive,
       createdAt: this.createdAt,
