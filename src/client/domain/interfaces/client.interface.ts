@@ -4,7 +4,7 @@ import { ResidencyStatus } from "../enums/residency_status";
 import { FeeACHPanama, FeeSwap, FeeWire } from "../../../system_configuration";
 import { CompanyDTO } from "../types/company.type";
 import { Documents } from "../../../documents";
-import { IndividualDTO, individualType } from "../types/Individual.type";
+import { IndividualDTO } from "../types/Individual.type";
 import { KycAction } from "../types/kyc-action.type";
 import { InvestmentProfile } from "../types/investment-profile.type";
 import { KycProfileType } from "../types/kyc-profile.type";
@@ -94,7 +94,7 @@ export interface IClient {
 
   deleteAllDocumentsPartners(dni: string): void;
 
-  getCompanyPartners(): individualType[] | undefined;
+  getCompanyPartners(): IndividualDTO[] | undefined;
 
   getInvestmentProfile(): InvestmentProfile;
 

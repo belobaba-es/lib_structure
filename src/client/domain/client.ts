@@ -509,12 +509,14 @@ export class Client extends AggregateRoot implements IClient {
 
   getKYCProfile(): KycProfileType {
     return {
-      businessJurisdictions: this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
+      businessJurisdictions:
+        this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
       fundsSendReceiveJurisdictions:
-          this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
+        this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
       engageInActivities: this.clientData.kycProfile.engageInActivities ?? "",
-      regulatedStatus: this.clientData.kycProfile.regulatedStatus
-
+      regulatedStatus: this.clientData.kycProfile.regulatedStatus,
+      descriptionBusinessNature:
+        this.clientData.kycProfile.descriptionBusinessNature ?? "",
     };
   }
 

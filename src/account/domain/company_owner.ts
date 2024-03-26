@@ -15,7 +15,7 @@ export class CompanyOwner implements IOwnerAccount {
   }
 
   getEmail(): string {
-    return this.company.email;
+    return this.company.informationCompany.email;
   }
 
   getName(): string {

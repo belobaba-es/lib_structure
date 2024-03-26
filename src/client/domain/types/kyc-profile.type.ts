@@ -1,6 +1,7 @@
 export type KycProfileType = {
-  businessJurisdictions:string[];
+  businessJurisdictions: string[];
   fundsSendReceiveJurisdictions: string[];
   engageInActivities: string;
-  regulatedStatus:string;
+  regulatedStatus: string;
+  descriptionBusinessNature: string;
 };

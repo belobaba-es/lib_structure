@@ -14,5 +14,6 @@ export enum DocumentType {
   ACCOUNT_AGREEMENT = "account_agreement",
   BENEFICIAL_OWNERSHIP_CERTIFICATE = "beneficial_ownership_certificate",
   INCORPORATION_DOCUMENT = "incorporation_document",
+  ARTICLE_OF_INCORPORATION = "article_incorporation",
   W2 = "w2",
 }

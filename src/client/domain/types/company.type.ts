@@ -14,13 +14,14 @@ type companyType = {
     webSite: string;
     registeredAddress: Address;
     physicalAddress: Address;
-  };
+  } & ContactInformation;
   documents: {
     patch: string;
     documentType: DocumentType;
   }[];
   questionnaire: CompanyQuestionnaire;
   partners: any[];
+  email: string;
 };
 
-export type CompanyDTO = companyType & ContactInformation;
+export type CompanyDTO = companyType;
