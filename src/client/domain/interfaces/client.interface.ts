@@ -103,4 +103,9 @@ export interface IClient {
   getOccupation(): string;
 
   getEmploymentStatus(): string;
+
+  setCustomerIdentifierInServiceProvider(
+    partnerIdProviderService: string,
+    partnerDNI: string,
+  ): void;
 }

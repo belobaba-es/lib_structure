@@ -508,6 +508,16 @@ export class Client extends AggregateRoot implements IClient {
   }
 
   getKYCProfile(): KycProfileType {
+    if (this.clientType === AccountType.INDIVIDUAL) {
+      return {
+        businessJurisdictions: [],
+        fundsSendReceiveJurisdictions:
+          this.clientData.fundsSendReceiveJurisdictions ?? "",
+        engageInActivities: this.clientData.engageInActivities ?? "",
+        regulatedStatus: "",
+        descriptionBusinessNature: "",
+      };
+    }
     return {
       businessJurisdictions:
         this.clientData.kycProfile.fundsSendReceiveJurisdictions ?? "",
@@ -518,6 +528,22 @@ export class Client extends AggregateRoot implements IClient {
       descriptionBusinessNature:
         this.clientData.kycProfile.descriptionBusinessNature ?? "",
     };
+  }
+
+  setCustomerIdentifierInServiceProvider(
+    serviceProviderId: string,
+    partnerDNI: string,
+  ): void {
+    const partnerIndex = this.clientData.partners.findIndex(
+      (partner: IndividualDTO) => partner.dni === partnerDNI,
+    );
+
+    if (partnerIndex === -1) {
+      throw new GenericException("Partner not found");
+    }
+
+    this.clientData.partners[partnerIndex].serviceProviderId =
+      serviceProviderId;
   }
 
   toPrimitives(): any {

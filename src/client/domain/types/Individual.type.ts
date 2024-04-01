@@ -1,6 +1,6 @@
 import { ResidencyStatus } from "../enums/residency_status";
 import { Address, ContactInformation } from "../../../shared";
-import { DocumentType } from "../../../documents";
+import { DocumentSide, DocumentType } from "../../../documents";
 import { KycAction } from "./kyc-action.type";
 
 export type individualType = {
@@ -18,10 +18,14 @@ export type individualType = {
   };
   kycRequestedChanges?: KycAction[];
   residencyStatus: ResidencyStatus;
+
   documents: {
     patch: string;
+    documentId: string;
     documentType: DocumentType;
+    documentSide: DocumentSide;
   }[];
+  serviceProviderId?: string;
 };
 
 export type IndividualDTO = individualType & Address & ContactInformation;
